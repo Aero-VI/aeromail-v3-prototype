@@ -1,244 +1,174 @@
-const mockEmails = [
+export const mockEmails = [
   {
-    id: 1,
-    from: 'Sarah Chen',
-    email: 'sarah.chen@company.com',
-    subject: 'Q1 Marketing Report - Final Review',
-    preview: 'Hi team, please find attached the final Q1 marketing report. Key highlights include a 23% increase in...',
-    body: `Hi team,
-
-Please find attached the final Q1 marketing report. Key highlights include:
-
-• 23% increase in organic traffic
-• Email open rates improved to 34.2%
-• Social media engagement up 41% across all platforms
-• Lead generation exceeded targets by 18%
-
-The report includes detailed breakdowns by channel and recommendations for Q2. Please review and share any feedback by Friday.
-
-Looking forward to discussing this at our Monday standup.
-
-Best,
-Sarah Chen
-VP Marketing`,
-    date: 'Mar 15',
-    read: false,
-    starred: false,
-    avatar: 'SC',
-    avatarColor: '#EA4335',
-    labels: ['Work'],
+    id: 1, threadId: 't1',
+    from: { name: 'Sarah Chen', email: 'sarah.chen@company.com', avatar: 'SC' },
+    to: [{ name: 'Me', email: 'user@aeromail.dev' }],
+    subject: 'Q1 Product Roadmap Review',
+    snippet: 'Hey team, I wanted to share the updated roadmap for Q1. We have some exciting features planned including the new dashboard redesign and API v3 launch...',
+    body: '<p>Hey team,</p><p>I wanted to share the updated roadmap for Q1. We have some exciting features planned including the new dashboard redesign and API v3 launch.</p><p>Key milestones:</p><ul><li>Dashboard v2 - Jan 15</li><li>API v3 Beta - Feb 1</li><li>Mobile app refresh - Feb 28</li><li>Analytics overhaul - Mar 15</li></ul><p>Let me know if you have any questions or concerns about the timeline.</p><p>Best,<br/>Sarah</p>',
+    date: '2026-03-15T10:30:00', read: false, starred: true,
+    labels: ['inbox', 'important'],
+    hasAttachment: true, attachments: [{ name: 'Q1_Roadmap.pdf', size: '2.4 MB' }],
   },
   {
-    id: 2,
-    from: 'GitHub',
-    email: 'noreply@github.com',
-    subject: '[aeromail] Pull Request #142: Feature/dark-mode',
-    preview: 'mergify[bot] merged pull request #142 into main. 14 files changed, 892 additions, 234 deletions...',
-    body: `mergify[bot] merged pull request #142 into main.
-
-Feature/dark-mode
-14 files changed, 892 additions(+), 234 deletions(-)
-
-Commits:
-• feat: add dark mode theme provider
-• fix: contrast ratios for accessibility
-• refactor: extract color tokens to theme.js
-• test: add dark mode snapshot tests
-
-View on GitHub: https://github.com/aeromail/aeromail/pull/142`,
-    date: 'Mar 15',
-    read: false,
-    starred: true,
-    avatar: 'GH',
-    avatarColor: '#6e40c9',
-    labels: ['Dev'],
+    id: 2, threadId: 't2',
+    from: { name: 'GitHub', email: 'notifications@github.com', avatar: 'GH' },
+    to: [{ name: 'Me', email: 'user@aeromail.dev' }],
+    subject: '[Aero-VI/aeromail] Pull request #142: Fix thread view rendering',
+    snippet: '@pixel-dev requested your review on pull request #142. Changes include fixes for conversation threading...',
+    body: '<p><strong>@pixel-dev</strong> requested your review on <a href="#">pull request #142</a>.</p><p>Changes include fixes for conversation threading in the email client.</p><p><strong>Files changed:</strong> 12<br/><strong>Additions:</strong> +248<br/><strong>Deletions:</strong> -89</p>',
+    date: '2026-03-15T09:15:00', read: false, starred: false, labels: ['inbox'],
+    hasAttachment: false,
   },
   {
-    id: 3,
-    from: 'Alex Rivera',
-    email: 'alex.rivera@design.co',
-    subject: 'Updated mockups for inbox redesign',
-    preview: 'Hey! Just finished the updated mockups for the inbox redesign. I incorporated all the feedback from...',
-    body: `Hey!
-
-Just finished the updated mockups for the inbox redesign. I incorporated all the feedback from Tuesday's review:
-
-1. Simplified the sidebar navigation
-2. Added density toggle (comfortable/compact/default)
-3. Reworked the thread view with better spacing
-4. New compose window with formatting toolbar
-
-Figma link: https://figma.com/file/mockup-link
-
-Let me know what you think! Happy to jump on a call to walk through the changes.
-
-Cheers,
-Alex`,
-    date: 'Mar 14',
-    read: true,
-    starred: false,
-    avatar: 'AR',
-    avatarColor: '#34A853',
-    labels: [],
+    id: 3, threadId: 't3',
+    from: { name: 'Alex Rivera', email: 'alex@startup.io', avatar: 'AR' },
+    to: [{ name: 'Me', email: 'user@aeromail.dev' }],
+    subject: 'Re: Partnership Opportunity',
+    snippet: 'Thanks for getting back to me! I think there is a real opportunity here to integrate our platforms...',
+    body: '<p>Thanks for getting back to me!</p><p>I think there\'s a real opportunity here to integrate our platforms. How about we set up a call next week to discuss the details?</p><p>I\'m available Tuesday or Thursday afternoon EST.</p><p>Cheers,<br/>Alex</p>',
+    date: '2026-03-15T08:42:00', read: true, starred: false, labels: ['inbox'],
+    hasAttachment: false,
   },
   {
-    id: 4,
-    from: 'Stripe',
-    email: 'receipts@stripe.com',
-    subject: 'Your receipt from AeroMail Pro',
-    preview: 'Payment of $29.00 to AeroMail Pro was successful. Receipt #1847-2938. Next billing date: April 15...',
-    body: `Payment Confirmation
-
-Amount: $29.00
-To: AeroMail Pro - Business Plan
-Receipt #: 1847-2938
-Date: March 14, 2026
-
-Card ending in: •••• 4242
-Next billing date: April 15, 2026
-
-View receipt: https://dashboard.stripe.com/receipts/1847-2938
-
-Questions? Contact support@aeromail.com`,
-    date: 'Mar 14',
-    read: true,
-    starred: false,
-    avatar: 'ST',
-    avatarColor: '#635BFF',
-    labels: ['Finance'],
+    id: 4, threadId: 't4',
+    from: { name: 'Stripe', email: 'receipts@stripe.com', avatar: 'ST' },
+    to: [{ name: 'Me', email: 'user@aeromail.dev' }],
+    subject: 'Your receipt from Aero Cloud Services',
+    snippet: 'Payment of $49.99 for Aero Cloud Services Pro Plan - March 2026. Your card ending in 4242 was charged...',
+    body: '<p>Payment of <strong>$49.99</strong> for Aero Cloud Services Pro Plan - March 2026.</p><p>Your card ending in 4242 was charged successfully.</p><p>Invoice #INV-2026-0315</p>',
+    date: '2026-03-14T23:00:00', read: true, starred: false, labels: ['inbox', 'purchases'],
+    hasAttachment: true, attachments: [{ name: 'Invoice_March2026.pdf', size: '156 KB' }],
   },
   {
-    id: 5,
-    from: 'Maria Torres',
-    email: 'maria@startup.io',
-    subject: 'Coffee next week?',
-    preview: "It's been a while! Would love to catch up over coffee. Are you free Tuesday or Wednesday afternoon?",
-    body: `Hey!
-
-It's been a while! Would love to catch up over coffee. Are you free Tuesday or Wednesday afternoon?
-
-I've been meaning to tell you about this new project I'm working on - I think you'd find it really interesting. It's in the AI/productivity space.
-
-Let me know what works for you. I'm flexible on location - happy to come to your side of town.
-
-Talk soon!
-Maria`,
-    date: 'Mar 13',
-    read: true,
-    starred: true,
-    avatar: 'MT',
-    avatarColor: '#FBBC04',
-    labels: ['Personal'],
+    id: 5, threadId: 't5',
+    from: { name: 'Jordan Lee', email: 'jordan.lee@design.co', avatar: 'JL' },
+    to: [{ name: 'Me', email: 'user@aeromail.dev' }],
+    subject: 'New mockups ready for review',
+    snippet: 'Hi! The new mockups for the settings page redesign are ready. I incorporated all the feedback from the last review...',
+    body: '<p>Hi!</p><p>The new mockups for the settings page redesign are ready. I incorporated all the feedback from the last review session.</p><p>Please take a look when you get a chance and let me know your thoughts.</p><p>Thanks,<br/>Jordan</p>',
+    date: '2026-03-14T17:30:00', read: false, starred: true, labels: ['inbox'],
+    hasAttachment: true, attachments: [{ name: 'Settings_Mockups_v3.fig', size: '8.2 MB' }, { name: 'Preview.png', size: '1.1 MB' }],
   },
   {
-    id: 6,
-    from: 'Jira',
-    email: 'jira@company.atlassian.net',
-    subject: '[AERO-891] Bug: Email threads not loading on mobile',
-    preview: 'Issue AERO-891 has been assigned to you. Priority: High. Reporter: QA Team. Environment: iOS 18.2...',
-    body: `Issue: AERO-891
-Type: Bug
-Priority: High
-Assignee: You
-Reporter: QA Team
-
-Summary: Email threads not loading on mobile
-
-Description:
-On iOS 18.2, tapping an email thread shows a blank white screen. The loading spinner appears for ~2 seconds then disappears with no content rendered.
-
-Steps to Reproduce:
-1. Open AeroMail on iPhone 15 Pro (iOS 18.2)
-2. Navigate to Inbox
-3. Tap any email thread with 3+ messages
-4. Observe blank screen
-
-Expected: Thread messages should load
-Actual: Blank white screen after spinner
-
-Environment: iOS 18.2, AeroMail v3.2.1 (build 847)`,
-    date: 'Mar 13',
-    read: false,
-    starred: false,
-    avatar: 'JI',
-    avatarColor: '#0052CC',
-    labels: ['Dev'],
+    id: 6, threadId: 't6',
+    from: { name: 'DevOps Alert', email: 'alerts@monitoring.aero.vi', avatar: 'DA' },
+    to: [{ name: 'Me', email: 'user@aeromail.dev' }],
+    subject: '⚠️ High CPU usage on prod-web-03',
+    snippet: 'Alert: CPU usage on prod-web-03 has exceeded 90% for the last 15 minutes. Current load average: 12.4...',
+    body: '<p><strong>⚠️ Alert: High CPU Usage</strong></p><p>Server: prod-web-03<br/>CPU: 92%<br/>Load Average: 12.4<br/>Duration: 15 minutes</p><p>Please investigate immediately.</p>',
+    date: '2026-03-14T15:22:00', read: true, starred: false, labels: ['inbox', 'updates'],
+    hasAttachment: false,
   },
   {
-    id: 7,
-    from: 'LinkedIn',
-    email: 'notifications@linkedin.com',
-    subject: '5 people viewed your profile this week',
-    preview: 'Your profile was viewed by recruiters from Google, Meta, and 3 others. See who viewed your profile...',
-    body: `Your Weekly Profile Stats
-
-5 people viewed your profile this week (+2 from last week)
-
-Profile viewers include recruiters from:
-• Google
-• Meta
-• 3 others
-
-Your post "Building Email for the AI Age" received:
-• 1,247 impressions
-• 89 reactions
-• 12 comments
-
-Keep your profile updated to attract more opportunities.`,
-    date: 'Mar 12',
-    read: true,
-    starred: false,
-    avatar: 'LI',
-    avatarColor: '#0A66C2',
-    labels: ['Social'],
+    id: 7, threadId: 't7',
+    from: { name: 'Newsletter Weekly', email: 'digest@technews.io', avatar: 'NW' },
+    to: [{ name: 'Me', email: 'user@aeromail.dev' }],
+    subject: 'This Week in Tech: AI Breakthroughs & More',
+    snippet: 'Top stories this week: New open-source LLM outperforms GPT-5 on benchmarks, Apple announces AR glasses...',
+    body: '<p><strong>Top Stories This Week</strong></p><ul><li>New open-source LLM outperforms GPT-5 on benchmarks</li><li>Apple announces AR glasses launch date</li><li>Quantum computing milestone achieved</li></ul>',
+    date: '2026-03-14T12:00:00', read: true, starred: false, labels: ['inbox', 'promotions'],
+    hasAttachment: false,
   },
   {
-    id: 8,
-    from: 'DevOps Alert',
-    email: 'alerts@monitoring.aeromail.com',
-    subject: '⚠️ CPU usage spike on mail-worker-03',
-    preview: 'Alert: mail-worker-03 CPU usage exceeded 90% threshold at 03:42 UTC. Auto-scaling triggered...',
-    body: `⚠️ Infrastructure Alert
-
-Server: mail-worker-03
-Metric: CPU Usage
-Threshold: 90%
-Current: 94.2%
-Time: 03:42 UTC, March 12, 2026
-
-Auto-scaling has been triggered:
-• 2 additional instances spinning up
-• ETA: ~3 minutes
-• Current healthy instances: 5/7
-
-Dashboard: https://monitoring.aeromail.com/dashboard/workers
-
-This alert will auto-resolve when usage drops below 75%.`,
-    date: 'Mar 12',
-    read: true,
-    starred: false,
-    avatar: 'DO',
-    avatarColor: '#EA4335',
-    labels: ['Dev'],
+    id: 8, threadId: 't8',
+    from: { name: 'Maria Santos', email: 'maria@aeromail.dev', avatar: 'MS' },
+    to: [{ name: 'Me', email: 'user@aeromail.dev' }],
+    subject: 'Team lunch tomorrow?',
+    snippet: 'Hey! Want to grab lunch tomorrow? That new Thai place on 5th just opened and the reviews look amazing...',
+    body: '<p>Hey!</p><p>Want to grab lunch tomorrow? That new Thai place on 5th just opened and the reviews look amazing.</p><p>I was thinking around 12:30?</p><p>— Maria</p>',
+    date: '2026-03-14T11:15:00', read: true, starred: false, labels: ['inbox', 'social'],
+    hasAttachment: false,
+  },
+  {
+    id: 9, threadId: 't9',
+    from: { name: 'LinkedIn', email: 'notifications@linkedin.com', avatar: 'LI' },
+    to: [{ name: 'Me', email: 'user@aeromail.dev' }],
+    subject: '5 new profile views and 3 connection requests',
+    snippet: 'You appeared in 5 searches this week. John Smith, CTO at TechCorp, and 2 others want to connect...',
+    body: '<p>You appeared in 5 searches this week.</p><p>John Smith, CTO at TechCorp, and 2 others want to connect with you.</p>',
+    date: '2026-03-14T09:00:00', read: true, starred: false, labels: ['inbox', 'social'],
+    hasAttachment: false,
+  },
+  {
+    id: 10, threadId: 't10',
+    from: { name: 'AWS Billing', email: 'billing@aws.amazon.com', avatar: 'AW' },
+    to: [{ name: 'Me', email: 'user@aeromail.dev' }],
+    subject: 'AWS Billing Alert: Estimated charges exceed $100',
+    snippet: 'Your estimated charges for the current billing period have exceeded $100.00. Current estimated total: $127.43...',
+    body: '<p>Your estimated charges for the current billing period have exceeded <strong>$100.00</strong>.</p><p>Current estimated total: $127.43</p><p>Top services:<br/>EC2: $45.20<br/>S3: $32.10<br/>RDS: $28.50</p>',
+    date: '2026-03-13T22:00:00', read: true, starred: false, labels: ['inbox', 'updates'],
+    hasAttachment: false,
+  },
+  {
+    id: 11, threadId: 't11',
+    from: { name: 'Security Team', email: 'security@aero.vi', avatar: 'SE' },
+    to: [{ name: 'Me', email: 'user@aeromail.dev' }],
+    subject: 'New sign-in from Chrome on Windows',
+    snippet: 'We noticed a new sign-in to your account from Chrome on Windows. If this was you, you can safely ignore...',
+    body: '<p>We noticed a new sign-in to your account.</p><p>Device: Chrome on Windows<br/>Location: New York, US<br/>Time: Mar 13, 2026 at 8:15 PM</p><p>If this was you, you can safely ignore this email.</p>',
+    date: '2026-03-13T20:15:00', read: true, starred: false, labels: ['inbox', 'updates'],
+    hasAttachment: false,
+  },
+  {
+    id: 12, threadId: 't12',
+    from: { name: 'Priya Patel', email: 'priya@consulting.com', avatar: 'PP' },
+    to: [{ name: 'Me', email: 'user@aeromail.dev' }],
+    subject: 'Re: Contract renewal discussion',
+    snippet: 'I have reviewed the proposed terms and everything looks good on our end. Ready to proceed with the renewal...',
+    body: '<p>I\'ve reviewed the proposed terms and everything looks good on our end. We\'re ready to proceed with the renewal.</p><p>Shall I send over the signed copy by Friday?</p><p>Best regards,<br/>Priya</p>',
+    date: '2026-03-13T16:45:00', read: true, starred: true, labels: ['inbox', 'important'],
+    hasAttachment: true, attachments: [{ name: 'Contract_Renewal_2026.docx', size: '340 KB' }],
   },
 ];
 
-export const folders = [
-  { name: 'Inbox', icon: 'Inbox', count: 3 },
-  { name: 'Starred', icon: 'Star', count: 2 },
-  { name: 'Snoozed', icon: 'AccessTime', count: 0 },
-  { name: 'Sent', icon: 'Send', count: 0 },
-  { name: 'Drafts', icon: 'Description', count: 1 },
-  { name: 'Spam', icon: 'Report', count: 0 },
-  { name: 'Trash', icon: 'Delete', count: 0 },
+export const mockThreadMessages = [
+  {
+    id: 101, threadId: 't1',
+    from: { name: 'Sarah Chen', email: 'sarah.chen@company.com', avatar: 'SC' },
+    to: [{ name: 'Team', email: 'team@aeromail.dev' }],
+    date: '2026-03-14T14:00:00',
+    body: '<p>Hi everyone,</p><p>I\'m putting together the Q1 product roadmap and wanted to get your initial thoughts before the review meeting.</p><p>Main areas of focus:</p><ol><li>Dashboard redesign</li><li>API v3</li><li>Mobile app refresh</li></ol><p>Please share any concerns by EOD Thursday.</p><p>Thanks,<br/>Sarah</p>',
+  },
+  {
+    id: 102, threadId: 't1',
+    from: { name: 'Me', email: 'user@aeromail.dev', avatar: 'ME' },
+    to: [{ name: 'Sarah Chen', email: 'sarah.chen@company.com' }],
+    date: '2026-03-14T16:30:00',
+    body: '<p>Sarah,</p><p>Looks great overall. A couple of thoughts:</p><ul><li>The API v3 timeline might be tight — can we discuss dependencies?</li><li>We should consider a beta program for the dashboard</li></ul><p>Happy to sync on this tomorrow.</p>',
+  },
+  {
+    id: 1, threadId: 't1',
+    from: { name: 'Sarah Chen', email: 'sarah.chen@company.com', avatar: 'SC' },
+    to: [{ name: 'Me', email: 'user@aeromail.dev' }],
+    date: '2026-03-15T10:30:00',
+    body: '<p>Hey team,</p><p>I wanted to share the updated roadmap for Q1. We have some exciting features planned including the new dashboard redesign and API v3 launch.</p><p>Key milestones:</p><ul><li>Dashboard v2 - Jan 15</li><li>API v3 Beta - Feb 1</li><li>Mobile app refresh - Feb 28</li><li>Analytics overhaul - Mar 15</li></ul><p>Let me know if you have any questions or concerns about the timeline.</p><p>Best,<br/>Sarah</p>',
+  },
 ];
 
-export const labels = [
-  { name: 'Work', color: '#34A853' },
-  { name: 'Personal', color: '#FBBC04' },
-  { name: 'Dev', color: '#8ab4f8' },
-  { name: 'Finance', color: '#EA4335' },
-  { name: 'Social', color: '#A142F4' },
+export const mockFolders = [
+  { id: 'inbox', name: 'Inbox', icon: 'inbox', count: 4 },
+  { id: 'starred', name: 'Starred', icon: 'star', count: 0 },
+  { id: 'snoozed', name: 'Snoozed', icon: 'schedule', count: 0 },
+  { id: 'important', name: 'Important', icon: 'label_important', count: 0 },
+  { id: 'sent', name: 'Sent', icon: 'send', count: 0 },
+  { id: 'drafts', name: 'Drafts', icon: 'drafts', count: 3 },
+  { id: 'spam', name: 'Spam', icon: 'report', count: 12 },
+  { id: 'trash', name: 'Trash', icon: 'delete', count: 0 },
 ];
 
-export default mockEmails;
+export const mockLabels = [
+  { id: 'work', name: 'Work', color: '#8ab4f8' },
+  { id: 'personal', name: 'Personal', color: '#81c995' },
+  { id: 'finance', name: 'Finance', color: '#fdd663' },
+  { id: 'travel', name: 'Travel', color: '#f28b82' },
+  { id: 'projects', name: 'Projects', color: '#c58af9' },
+];
+
+export const mockFilters = [
+  { id: 1, matches: 'from:notifications@github.com', action: 'Apply label "Work", Skip Inbox' },
+  { id: 2, matches: 'from:alerts@monitoring.aero.vi', action: 'Apply label "Work", Mark as important' },
+  { id: 3, matches: 'from:*@linkedin.com', action: 'Apply label "Social"' },
+  { id: 4, matches: 'subject:(receipt OR invoice OR billing)', action: 'Apply label "Finance"' },
+  { id: 5, matches: 'from:digest@technews.io', action: 'Skip Inbox, Apply label "Newsletters"' },
+];

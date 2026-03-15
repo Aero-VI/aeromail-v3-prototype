@@ -1,139 +1,104 @@
-import {
-  Box,
-  Avatar,
-  Typography,
-  Checkbox,
-  IconButton,
-  Chip,
-} from '@mui/material';
-import { Star, StarBorder } from '@mui/icons-material';
+import React, { useState } from 'react';
+import { Box, Checkbox, IconButton, Typography, Tooltip } from '@mui/material';
+import { Archive, Delete, MarkunreadMailbox, MoreVert, Refresh, ChevronLeft, ChevronRight, StarBorder, Star, AttachFile, KeyboardArrowDown } from '@mui/icons-material';
+import { useNavigate } from 'react-router-dom';
+import { mockEmails } from '../data/mockEmails';
 
-export default function EmailList({ emails, onEmailClick, onStarToggle }) {
+function formatDate(dateStr) {
+  const d = new Date(dateStr);
+  const now = new Date();
+  if (d.toDateString() === now.toDateString()) return d.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit', hour12: true });
+  const diff = Math.floor((now - d) / 86400000);
+  if (diff < 7) return d.toLocaleDateString('en-US', { weekday: 'short' });
+  return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+}
+
+export default function EmailList({ activeFolder }) {
+  const navigate = useNavigate();
+  const [selectedIds, setSelectedIds] = useState(new Set());
+  const [starredIds, setStarredIds] = useState(new Set(mockEmails.filter(e => e.starred).map(e => e.id)));
+
+  const emails = mockEmails.filter(e => {
+    if (activeFolder === 'starred') return starredIds.has(e.id);
+    if (activeFolder === 'inbox') return e.labels.includes('inbox');
+    return e.labels.includes(activeFolder);
+  });
+
+  const toggleStar = (ev, id) => {
+    ev.stopPropagation();
+    const next = new Set(starredIds);
+    next.has(id) ? next.delete(id) : next.add(id);
+    setStarredIds(next);
+  };
+
   return (
-    <Box sx={{ flex: 1, overflowY: 'auto' }}>
-      {emails.map((email) => (
-        <Box
-          key={email.id}
-          onClick={() => onEmailClick(email)}
-          sx={{
-            display: 'flex',
-            alignItems: 'center',
-            px: 1,
-            py: 0.5,
-            cursor: 'pointer',
-            bgcolor: email.read ? 'transparent' : 'rgba(138,180,248,0.04)',
-            borderBottom: '1px solid rgba(255,255,255,0.04)',
-            '&:hover': {
-              bgcolor: 'rgba(255,255,255,0.06)',
-              boxShadow: '0 1px 3px rgba(0,0,0,0.2)',
-            },
-            transition: 'background 0.15s',
-          }}
-        >
-          <Checkbox
-            size="small"
-            sx={{ color: '#9aa0a6', '&.Mui-checked': { color: '#8ab4f8' } }}
-            onClick={(e) => e.stopPropagation()}
-          />
-          <IconButton
-            size="small"
-            onClick={(e) => {
-              e.stopPropagation();
-              onStarToggle(email.id);
-            }}
-            sx={{ mr: 1 }}
-          >
-            {email.starred ? (
-              <Star sx={{ fontSize: 20, color: '#FBBC04' }} />
-            ) : (
-              <StarBorder sx={{ fontSize: 20, color: '#9aa0a6' }} />
-            )}
-          </IconButton>
+    <Box sx={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
+      {/* Toolbar */}
+      <Box sx={{ display: 'flex', alignItems: 'center', px: 1, py: 0.5, borderBottom: '1px solid #3c4043', minHeight: 48 }}>
+        <Checkbox size="small" sx={{ color: '#9aa0a6', '&.Mui-checked': { color: '#8ab4f8' } }}
+          checked={selectedIds.size > 0 && selectedIds.size === emails.length}
+          indeterminate={selectedIds.size > 0 && selectedIds.size < emails.length}
+          onChange={() => selectedIds.size === emails.length ? setSelectedIds(new Set()) : setSelectedIds(new Set(emails.map(e => e.id)))} />
+        <IconButton size="small" sx={{ color: '#9aa0a6', ml: -0.5 }}><KeyboardArrowDown fontSize="small" /></IconButton>
+        {selectedIds.size > 0 ? (
+          <>
+            <Tooltip title="Archive"><IconButton size="small" sx={{ color: '#9aa0a6' }}><Archive fontSize="small" /></IconButton></Tooltip>
+            <Tooltip title="Delete"><IconButton size="small" sx={{ color: '#9aa0a6' }}><Delete fontSize="small" /></IconButton></Tooltip>
+            <Tooltip title="Mark as read"><IconButton size="small" sx={{ color: '#9aa0a6' }}><MarkunreadMailbox fontSize="small" /></IconButton></Tooltip>
+            <Tooltip title="More"><IconButton size="small" sx={{ color: '#9aa0a6' }}><MoreVert fontSize="small" /></IconButton></Tooltip>
+          </>
+        ) : (
+          <Tooltip title="Refresh"><IconButton size="small" sx={{ color: '#9aa0a6', ml: 0.5 }}><Refresh fontSize="small" /></IconButton></Tooltip>
+        )}
+        <Box sx={{ flex: 1 }} />
+        <Typography variant="body2" sx={{ color: '#9aa0a6', mr: 1 }}>1–{emails.length} of {emails.length}</Typography>
+        <IconButton size="small" sx={{ color: '#9aa0a6' }}><ChevronLeft fontSize="small" /></IconButton>
+        <IconButton size="small" sx={{ color: '#9aa0a6' }}><ChevronRight fontSize="small" /></IconButton>
+      </Box>
 
-          <Avatar
-            sx={{
-              width: 32,
-              height: 32,
-              fontSize: '0.75rem',
-              bgcolor: email.avatarColor,
-              mr: 1.5,
-              fontWeight: 600,
-            }}
-          >
-            {email.avatar}
-          </Avatar>
-
-          <Box sx={{ width: 180, minWidth: 180, mr: 2 }}>
-            <Typography
-              variant="body2"
-              noWrap
+      {/* Email rows */}
+      <Box sx={{ flex: 1, overflow: 'auto' }}>
+        {emails.map(email => {
+          const selected = selectedIds.has(email.id);
+          return (
+            <Box key={email.id} onClick={() => navigate(`/thread/${email.threadId}`)}
               sx={{
-                color: '#e8eaed',
-                fontWeight: email.read ? 400 : 700,
-                fontSize: '0.875rem',
-              }}
-            >
-              {email.from}
-            </Typography>
-          </Box>
-
-          <Box sx={{ flex: 1, overflow: 'hidden', mr: 2 }}>
-            <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-              <Typography
-                variant="body2"
-                noWrap
-                sx={{
-                  color: '#e8eaed',
-                  fontWeight: email.read ? 400 : 600,
-                  fontSize: '0.875rem',
-                }}
-              >
-                {email.subject}
+                display: 'flex', alignItems: 'center', px: 1, py: 0.5, cursor: 'pointer', minHeight: 44,
+                bgcolor: selected ? 'rgba(138,180,248,0.12)' : email.read ? '#1f1f1f' : 'rgba(255,255,255,0.04)',
+                borderBottom: '1px solid rgba(60,64,67,0.4)',
+                '&:hover': { bgcolor: 'rgba(232,234,237,0.08)', boxShadow: 'inset 0 -1px 0 #3c4043' },
+              }}>
+              <Checkbox size="small" checked={selected} onClick={e => e.stopPropagation()}
+                onChange={() => { const n = new Set(selectedIds); n.has(email.id) ? n.delete(email.id) : n.add(email.id); setSelectedIds(n); }}
+                sx={{ color: '#9aa0a6', '&.Mui-checked': { color: '#8ab4f8' }, mr: -0.5 }} />
+              <IconButton size="small" onClick={(e) => toggleStar(e, email.id)}
+                sx={{ color: starredIds.has(email.id) ? '#fdd663' : '#9aa0a6', mr: 0.5 }}>
+                {starredIds.has(email.id) ? <Star fontSize="small" /> : <StarBorder fontSize="small" />}
+              </IconButton>
+              <Typography sx={{ width: 180, flexShrink: 0, fontSize: '0.85rem', fontWeight: email.read ? 400 : 700, color: '#e8eaed', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                {email.from.name}
               </Typography>
-              <Typography
-                variant="body2"
-                noWrap
-                sx={{
-                  color: '#9aa0a6',
-                  fontSize: '0.8rem',
-                  flex: 1,
-                }}
-              >
-                — {email.preview}
+              <Box sx={{ flex: 1, display: 'flex', alignItems: 'center', overflow: 'hidden', mx: 2 }}>
+                <Typography component="span" sx={{ fontSize: '0.85rem', fontWeight: email.read ? 400 : 600, color: '#e8eaed', whiteSpace: 'nowrap', flexShrink: 0 }}>
+                  {email.subject}
+                </Typography>
+                <Typography component="span" sx={{ fontSize: '0.85rem', color: '#9aa0a6', ml: 0.5, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                  &nbsp;— {email.snippet}
+                </Typography>
+              </Box>
+              {email.hasAttachment && <AttachFile sx={{ color: '#9aa0a6', fontSize: 16, mr: 1, transform: 'rotate(45deg)' }} />}
+              <Typography sx={{ fontSize: '0.75rem', color: email.read ? '#9aa0a6' : '#e8eaed', fontWeight: email.read ? 400 : 600, whiteSpace: 'nowrap', flexShrink: 0 }}>
+                {formatDate(email.date)}
               </Typography>
             </Box>
+          );
+        })}
+        {emails.length === 0 && (
+          <Box sx={{ textAlign: 'center', py: 8 }}>
+            <Typography sx={{ color: '#9aa0a6', fontSize: '1rem' }}>No emails in this folder</Typography>
           </Box>
-
-          <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5, mr: 1 }}>
-            {email.labels.map((label) => (
-              <Chip
-                key={label}
-                label={label}
-                size="small"
-                sx={{
-                  height: 20,
-                  fontSize: '0.7rem',
-                  bgcolor: 'rgba(255,255,255,0.08)',
-                  color: '#9aa0a6',
-                }}
-              />
-            ))}
-          </Box>
-
-          <Typography
-            variant="caption"
-            sx={{
-              color: email.read ? '#9aa0a6' : '#e8eaed',
-              fontWeight: email.read ? 400 : 600,
-              whiteSpace: 'nowrap',
-              minWidth: 50,
-              textAlign: 'right',
-            }}
-          >
-            {email.date}
-          </Typography>
-        </Box>
-      ))}
+        )}
+      </Box>
     </Box>
   );
 }

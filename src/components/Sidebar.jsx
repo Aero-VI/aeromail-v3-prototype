@@ -1,138 +1,51 @@
-import {
-  Box,
-  List,
-  ListItemButton,
-  ListItemIcon,
-  ListItemText,
-  Typography,
-  Divider,
-  Badge,
-} from '@mui/material';
-import {
-  Inbox,
-  Star,
-  AccessTime,
-  Send,
-  Description,
-  Report,
-  Delete,
-  Label,
-  Edit as ComposeIcon,
-} from '@mui/icons-material';
-import { folders, labels } from '../data/mockEmails';
+import React, { useState } from 'react';
+import { Box, List, ListItemButton, ListItemIcon, ListItemText, Typography, Button, Divider, Collapse } from '@mui/material';
+import { Inbox, StarBorder, Schedule, LabelImportant, Send, Drafts, Report, Delete, Edit, ExpandMore, ExpandLess, Label } from '@mui/icons-material';
+import { mockFolders, mockLabels } from '../data/mockEmails';
 
-const iconMap = {
-  Inbox: <Inbox />,
-  Star: <Star />,
-  AccessTime: <AccessTime />,
-  Send: <Send />,
-  Description: <Description />,
-  Report: <Report />,
-  Delete: <Delete />,
-};
+const iconMap = { inbox: Inbox, star: StarBorder, schedule: Schedule, label_important: LabelImportant, send: Send, drafts: Drafts, report: Report, delete: Delete };
 
-export default function Sidebar({ activeFolder, onFolderClick, onComposeClick }) {
+export default function Sidebar({ open, activeFolder, onFolderChange, onCompose }) {
+  const [labelsOpen, setLabelsOpen] = useState(true);
+  if (!open) return null;
+
   return (
-    <Box
-      sx={{
-        width: 256,
-        minWidth: 256,
-        bgcolor: '#1f1f1f',
-        height: '100%',
-        overflowY: 'auto',
-        pt: 1,
-      }}
-    >
-      <Box sx={{ px: 2, py: 1.5 }}>
-        <Box
-          onClick={onComposeClick}
-          sx={{
-            display: 'flex',
-            alignItems: 'center',
-            gap: 1.5,
-            bgcolor: '#313D5A',
-            borderRadius: '16px',
-            px: 3,
-            py: 1.5,
-            cursor: 'pointer',
-            transition: 'box-shadow 0.2s',
-            '&:hover': {
-              boxShadow: '0 1px 3px rgba(0,0,0,0.3)',
-            },
-          }}
-        >
-          <ComposeIcon sx={{ color: '#e8eaed', fontSize: 20 }} />
-          <Typography sx={{ color: '#e8eaed', fontWeight: 500, fontSize: '0.9rem' }}>
-            Compose
-          </Typography>
-        </Box>
+    <Box sx={{ width: 256, flexShrink: 0, bgcolor: '#1f1f1f', borderRight: '1px solid #3c4043', display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
+      <Box sx={{ p: 2, pb: 1 }}>
+        <Button variant="contained" startIcon={<Edit />} onClick={onCompose}
+          sx={{ bgcolor: '#2a4a5e', color: '#b8d4e8', borderRadius: '16px', px: 3, py: 1.2, fontSize: '0.9rem', fontWeight: 500, boxShadow: '0 1px 3px rgba(0,0,0,0.3)', '&:hover': { bgcolor: '#304f66', boxShadow: '0 2px 6px rgba(0,0,0,0.4)' }, width: '100%', justifyContent: 'flex-start' }}>
+          Compose
+        </Button>
       </Box>
 
-      <List sx={{ px: 1 }}>
-        {folders.map((folder) => (
-          <ListItemButton
-            key={folder.name}
-            selected={activeFolder === folder.name}
-            onClick={() => onFolderClick(folder.name)}
-            sx={{
-              borderRadius: '0 20px 20px 0',
-              py: 0.5,
-              px: 2,
-              mb: 0.25,
-              '&.Mui-selected': {
-                bgcolor: 'rgba(138,180,248,0.12)',
-                '&:hover': { bgcolor: 'rgba(138,180,248,0.18)' },
-              },
-              '&:hover': { bgcolor: 'rgba(255,255,255,0.06)' },
-            }}
-          >
-            <ListItemIcon sx={{ color: activeFolder === folder.name ? '#8ab4f8' : '#9aa0a6', minWidth: 40 }}>
-              {iconMap[folder.icon]}
-            </ListItemIcon>
-            <ListItemText
-              primary={folder.name}
-              primaryTypographyProps={{
-                fontSize: '0.875rem',
-                fontWeight: activeFolder === folder.name ? 600 : 400,
-                color: activeFolder === folder.name ? '#e8eaed' : '#9aa0a6',
-              }}
-            />
-            {folder.count > 0 && (
-              <Typography variant="caption" sx={{ color: '#e8eaed', fontWeight: 600 }}>
-                {folder.count}
-              </Typography>
-            )}
-          </ListItemButton>
-        ))}
-      </List>
-
-      <Divider sx={{ borderColor: 'rgba(255,255,255,0.08)', mx: 2, my: 1 }} />
-
-      <Box sx={{ px: 3, py: 1 }}>
-        <Typography variant="caption" sx={{ color: '#9aa0a6', fontWeight: 500, letterSpacing: '0.5px' }}>
-          LABELS
-        </Typography>
-      </Box>
-      <List sx={{ px: 1 }}>
-        {labels.map((label) => (
-          <ListItemButton
-            key={label.name}
-            sx={{
-              borderRadius: '0 20px 20px 0',
-              py: 0.3,
-              px: 2,
-              '&:hover': { bgcolor: 'rgba(255,255,255,0.06)' },
-            }}
-          >
-            <ListItemIcon sx={{ minWidth: 40 }}>
-              <Label sx={{ color: label.color, fontSize: 20 }} />
-            </ListItemIcon>
-            <ListItemText
-              primary={label.name}
-              primaryTypographyProps={{ fontSize: '0.875rem', color: '#9aa0a6' }}
-            />
-          </ListItemButton>
-        ))}
+      <List sx={{ flex: 1, overflow: 'auto', py: 0 }}>
+        {mockFolders.map((folder) => {
+          const Icon = iconMap[folder.icon] || Inbox;
+          const active = activeFolder === folder.id;
+          return (
+            <ListItemButton key={folder.id} selected={active} onClick={() => onFolderChange(folder.id)}
+              sx={{ py: 0.5, pl: 2.5, pr: 1.5, borderRadius: '0 20px 20px 0', mr: 1,
+                '&.Mui-selected': { bgcolor: 'rgba(138,180,248,0.16)', '&:hover': { bgcolor: 'rgba(138,180,248,0.22)' } },
+                '&:hover': { bgcolor: 'rgba(232,234,237,0.08)' } }}>
+              <ListItemIcon sx={{ minWidth: 36, color: active ? '#8ab4f8' : '#9aa0a6' }}><Icon fontSize="small" /></ListItemIcon>
+              <ListItemText primary={folder.name} sx={{ '& .MuiListItemText-primary': { fontSize: '0.85rem', fontWeight: active ? 600 : 400, color: '#e8eaed' } }} />
+              {folder.count > 0 && <Typography variant="caption" sx={{ color: '#9aa0a6', fontWeight: 500, fontSize: '0.75rem' }}>{folder.count}</Typography>}
+            </ListItemButton>
+          );
+        })}
+        <Divider sx={{ borderColor: '#3c4043', my: 1, mx: 2 }} />
+        <ListItemButton onClick={() => setLabelsOpen(!labelsOpen)} sx={{ py: 0.5, pl: 2.5, '&:hover': { bgcolor: 'rgba(232,234,237,0.08)' } }}>
+          <ListItemText primary="Labels" sx={{ '& .MuiListItemText-primary': { fontSize: '0.8rem', fontWeight: 500, color: '#9aa0a6', textTransform: 'uppercase', letterSpacing: 0.5 } }} />
+          {labelsOpen ? <ExpandLess sx={{ color: '#9aa0a6', fontSize: 18 }} /> : <ExpandMore sx={{ color: '#9aa0a6', fontSize: 18 }} />}
+        </ListItemButton>
+        <Collapse in={labelsOpen}>
+          {mockLabels.map((label) => (
+            <ListItemButton key={label.id} sx={{ py: 0.4, pl: 2.5, pr: 1.5, borderRadius: '0 20px 20px 0', mr: 1, '&:hover': { bgcolor: 'rgba(232,234,237,0.08)' } }}>
+              <ListItemIcon sx={{ minWidth: 36 }}><Label sx={{ color: label.color, fontSize: 18 }} /></ListItemIcon>
+              <ListItemText primary={label.name} sx={{ '& .MuiListItemText-primary': { fontSize: '0.85rem', color: '#e8eaed' } }} />
+            </ListItemButton>
+          ))}
+        </Collapse>
       </List>
     </Box>
   );

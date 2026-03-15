@@ -1,22 +1,24 @@
-import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
-import { ThemeProvider, CssBaseline } from '@mui/material';
-import theme from './theme';
+import React, { useState } from 'react';
+import { Routes, Route, Navigate } from 'react-router-dom';
 import Login from './pages/Login';
-import Inbox from './pages/Inbox';
+import AdminSetup from './pages/AdminSetup';
+import MailLayout from './components/MailLayout';
 
-function App() {
+export default function App() {
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+
+  if (!isLoggedIn) {
+    return (
+      <Routes>
+        <Route path="/admin" element={<AdminSetup />} />
+        <Route path="*" element={<Login onLogin={() => setIsLoggedIn(true)} />} />
+      </Routes>
+    );
+  }
+
   return (
-    <ThemeProvider theme={theme}>
-      <CssBaseline />
-      <BrowserRouter>
-        <Routes>
-          <Route path="/" element={<Login />} />
-          <Route path="/inbox" element={<Inbox />} />
-          <Route path="*" element={<Navigate to="/" replace />} />
-        </Routes>
-      </BrowserRouter>
-    </ThemeProvider>
+    <Routes>
+      <Route path="/*" element={<MailLayout onLogout={() => setIsLoggedIn(false)} />} />
+    </Routes>
   );
 }
-
-export default App;
